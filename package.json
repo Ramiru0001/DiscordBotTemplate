@@ -1,16 +1,16 @@
 {
   "name": "discord_bot",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "main.py",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "python main.py"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "discord.js": "^14.15.3",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "discord.py": "^1.7.3"
   }
 }
