@@ -2,6 +2,17 @@ import os
 import discord
 from dotenv import load_dotenv
 from discord.ext import commands
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello():
+    return 'Hello, World!'
+
+if __name__ == '__main__':
+    app.run()
+
 
 # .envファイルから環境変数を読み込む
 load_dotenv()
