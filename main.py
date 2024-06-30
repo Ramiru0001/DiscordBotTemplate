@@ -1,18 +1,12 @@
 import os
 import discord
+import sys
+import asyncio
 from dotenv import load_dotenv
 from discord.ext import commands
-from flask import Flask
-from keep_alive import keep_alive
-
-app = Flask(__name__)
-
-@app.route('/')
-def hello():
-    return 'Hello, World!'
 
 if __name__ == '__main__':
-    app.run()
+    pass
 
 # .envファイルから環境変数を読み込む
 load_dotenv()
@@ -21,28 +15,33 @@ load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 # Intentsを設定
 intents = discord.Intents.default()
-intents.message_content = True  # メッセージコンテンツを取得するために必要
+intents.messages = True  # メッセージコンテンツを取得するために必要
+if sys.platform == "win32":
+    intents.message_content = True
 # ボットを作成
-client = commands.Bot(command_prefix='!',intents=intents)
+bot = commands.Bot(command_prefix='!',intents=intents)
 
 #s ボットの準備ができたときの処理
-@client.event
+@bot.event
 async def on_ready():
-    print(f'{client.user.name} has connected to Discord!')
-
+    print(f'{bot.user.name} が接続しました!')
+@bot.event
+async def on_disconnect():
+    print('ボットが切断されました。')
 # メッセージを受信したときの処理
-@client.event
+@bot.event
 async def on_message(message):
-    if message.author == client.user:
+    if message.author == bot.user:
         return
-
+    
     if message.content.startswith('!ping'):
         await message.channel.send('Pong!')
 
-# ボットを実行
-
-keep_alive()
+# イベントループの取得と開始
+loop = asyncio.get_event_loop()
 try:
-    client.run(os.environ['TOKEN'])
-except:
-    os.system("kill")
+    loop.run_until_complete(bot.start(TOKEN))
+except KeyboardInterrupt:
+    loop.run_until_complete(bot.close())
+finally:
+    loop.close()
